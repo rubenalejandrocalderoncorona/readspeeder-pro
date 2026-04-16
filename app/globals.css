@@ -1,26 +1,115 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+/* ── Tailwind v4 theme tokens ────────────────────────────────────────────── */
+@theme {
+  /* macOS system colors */
+  --color-mac-blue:        #007AFF;
+  --color-mac-blue-dark:   #0A84FF;
+  --color-mac-red:         #FF3B30;
+  --color-mac-green:       #34C759;
+  --color-mac-yellow:      #FF9F0A;
+  --color-mac-orange:      #FF6D00;
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+  /* Backgrounds */
+  --color-mac-bg:          #f0f0f0;
+  --color-mac-bg-dark:     #1c1c1e;
+  --color-mac-surface:     #ffffff;
+  --color-mac-surface-dark:#2c2c2e;
+  --color-mac-sidebar:     #f5f5f7;
+  --color-mac-sidebar-dark:#252528;
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+  /* Border radius */
+  --radius-mac:   8px;
+  --radius-mac-lg:12px;
+  --radius-mac-xl:18px;
+
+  /* Shadows */
+  --shadow-mac:    0 1px 3px rgba(0,0,0,0.10), 0 1px 2px rgba(0,0,0,0.06);
+  --shadow-mac-md: 0 4px 12px rgba(0,0,0,0.10), 0 2px 6px rgba(0,0,0,0.06);
+  --shadow-mac-lg: 0 8px 30px rgba(0,0,0,0.12), 0 4px 10px rgba(0,0,0,0.08);
+
+  /* Font */
+  --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text",
+               "Helvetica Neue", Arial, sans-serif;
+  --font-mono: "SF Mono", Monaco, "Cascadia Code", "Fira Code", monospace;
+  --font-serif: "New York", "Georgia", serif;
+
+  /* Animations */
+  --animate-phrase-appear: phraseAppear 0.08s ease-out;
+  --animate-pulse-dot:     pulseDot 1.5s ease-in-out infinite;
+  --animate-fade-in:       fadeIn 0.15s ease-out;
+
+  @keyframes phraseAppear {
+    from { opacity: 0; transform: scale(0.97); }
+    to   { opacity: 1; transform: scale(1);    }
+  }
+  @keyframes pulseDot {
+    0%, 100% { opacity: 1;   transform: scale(1);   }
+    50%       { opacity: 0.4; transform: scale(0.75);}
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to   { opacity: 1; }
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* ── Base styles ─────────────────────────────────────────────────────────── */
+@layer base {
+  *, *::before, *::after {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    box-sizing: border-box;
+  }
+
+  html, body {
+    height: 100%;
+    overflow: hidden;
+    font-family: var(--font-sans);
+    background-color: var(--color-mac-bg);
+    color: #1d1d1f;
+    user-select: none;
+  }
+
+  html.dark body {
+    background-color: var(--color-mac-bg-dark);
+    color: #f5f5f7;
+  }
+
+  /* macOS-style thin scrollbars */
+  ::-webkit-scrollbar { width: 5px; height: 5px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb {
+    background: rgba(0,0,0,0.18);
+    border-radius: 99px;
+  }
+  html.dark ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.18); }
+
+  .reader-text { user-select: text; }
+}
+
+/* ── Custom utility classes ──────────────────────────────────────────────── */
+@layer utilities {
+  /* macOS vibrancy sidebar / titlebar effect */
+  .mac-vibrancy {
+    background: rgba(246, 246, 248, 0.88);
+    backdrop-filter: saturate(180%) blur(20px);
+    -webkit-backdrop-filter: saturate(180%) blur(20px);
+  }
+  html.dark .mac-vibrancy {
+    background: rgba(38, 38, 40, 0.88);
+  }
+
+  /* Glass card */
+  .glass {
+    background: rgba(255, 255, 255, 0.75);
+    backdrop-filter: blur(16px) saturate(160%);
+    -webkit-backdrop-filter: blur(16px) saturate(160%);
+  }
+  html.dark .glass {
+    background: rgba(44, 44, 46, 0.80);
+  }
+
+  /* Tauri window drag */
+  .drag-region  { -webkit-app-region: drag;    app-region: drag;    }
+  .no-drag      { -webkit-app-region: no-drag; app-region: no-drag; }
 }
