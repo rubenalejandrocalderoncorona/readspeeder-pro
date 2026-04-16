@@ -65,7 +65,7 @@ export default function LibraryView() {
   return (
     <div className="flex flex-col h-full overflow-y-auto px-6 py-4 gap-4">
       <div className="flex items-center justify-between">
-        <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Library</h2>
+        <h2 className="text-lg font-semibold text-ink dark:text-white/90">Library</h2>
         <MacButton size="sm" variant="primary" onClick={() => setShowAddText((v) => !v)}>
           <Plus size={13} className="mr-1" /> Add Text
         </MacButton>
@@ -73,7 +73,7 @@ export default function LibraryView() {
 
       {/* Upload */}
       <div>
-        <p className="text-xs text-gray-400 dark:text-gray-500 mb-2 font-medium uppercase tracking-widest">Upload File</p>
+        <p className="text-xs text-ink-4 dark:text-white/30 mb-2 font-medium uppercase tracking-widest">Upload File</p>
         <FileUploader />
       </div>
 
@@ -81,20 +81,20 @@ export default function LibraryView() {
       {showAddText && (
         <MacCard>
           <div className="p-4 flex flex-col gap-3">
-            <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300">Enter Your Own Text</h3>
+            <h3 className="text-sm font-semibold text-ink-2 dark:text-white/60">Enter Your Own Text</h3>
             <input
               type="text"
               placeholder="Title (optional)"
               value={newTitle}
               onChange={(e) => setNewTitle(e.target.value)}
-              className="w-full px-3 py-2 rounded-mac text-sm border border-black/[0.08] dark:border-white/[0.08] bg-white dark:bg-white/[0.04] outline-none focus:ring-1 focus:ring-mac-blue text-gray-800 dark:text-gray-200"
+              className="w-full px-3 py-2 rounded-[8px] text-sm border border-ink/[0.08] dark:border-white/[0.08] bg-page dark:bg-white/[0.04] outline-none focus:ring-1 focus:ring-mac-blue text-ink dark:text-white/80"
             />
             <textarea
               placeholder="Paste or enter text here…"
               value={newText}
               onChange={(e) => setNewText(e.target.value)}
               rows={6}
-              className="w-full px-3 py-2 rounded-mac text-sm border border-black/[0.08] dark:border-white/[0.08] bg-white dark:bg-white/[0.04] outline-none focus:ring-1 focus:ring-mac-blue resize-none text-gray-800 dark:text-gray-200 reader-text"
+              className="w-full px-3 py-2 rounded-[8px] text-sm border border-ink/[0.08] dark:border-white/[0.08] bg-page dark:bg-white/[0.04] outline-none focus:ring-1 focus:ring-mac-blue resize-none text-ink dark:text-white/80 reader-text"
             />
             <div className="flex gap-2">
               <MacButton variant="primary" size="sm" onClick={saveCustomText}>Save</MacButton>
@@ -106,7 +106,7 @@ export default function LibraryView() {
 
       {/* Classic samples */}
       <div>
-        <p className="text-xs text-gray-400 dark:text-gray-500 mb-2 font-medium uppercase tracking-widest">Classic Titles</p>
+        <p className="text-xs text-ink-4 dark:text-white/30 mb-2 font-medium uppercase tracking-widest">Classic Titles</p>
         <div className="grid grid-cols-2 gap-2">
           {SAMPLE_CLASSICS.map((s) => {
             const alreadyAdded = library.some((l) => l.title === s.title);
@@ -115,12 +115,12 @@ export default function LibraryView() {
                 <div className="p-3 flex flex-col gap-2">
                   <div className="flex items-start justify-between gap-2">
                     <div>
-                      <div className="text-sm font-medium text-gray-800 dark:text-gray-200">{s.title}</div>
-                      <div className="text-xs text-gray-400 dark:text-gray-500">{s.author}</div>
+                      <div className="text-sm font-medium text-ink dark:text-white/80">{s.title}</div>
+                      <div className="text-xs text-ink-4 dark:text-white/30">{s.author}</div>
                     </div>
-                    <BookOpen size={14} className="text-gray-400 shrink-0 mt-0.5" />
+                    <BookOpen size={14} className="text-ink-4 shrink-0 mt-0.5" />
                   </div>
-                  <div className="text-xs text-gray-400 dark:text-gray-500">{s.wordCount.toLocaleString()} words</div>
+                  <div className="text-xs text-ink-4 dark:text-white/30">{s.wordCount.toLocaleString()} words</div>
                   {alreadyAdded ? (
                     <MacButton size="sm" variant="ghost" disabled>Added</MacButton>
                   ) : (
@@ -136,16 +136,16 @@ export default function LibraryView() {
       {/* User library */}
       {allItems.length > 0 && (
         <div>
-          <p className="text-xs text-gray-400 dark:text-gray-500 mb-2 font-medium uppercase tracking-widest">Your Library</p>
+          <p className="text-xs text-ink-4 dark:text-white/30 mb-2 font-medium uppercase tracking-widest">Your Library</p>
           <div className="flex flex-col gap-1">
             {allItems.map((item) => (
               <div
                 key={item.id}
                 className={clsx(
-                  "flex items-center justify-between px-3 py-2.5 rounded-mac border transition-all cursor-pointer",
+                  "flex items-center justify-between px-3 py-2.5 rounded-[8px] border transition-all cursor-pointer",
                   selectedTextId === item.id
-                    ? "bg-mac-blue border-mac-blue text-white"
-                    : "bg-white dark:bg-white/[0.04] border-black/[0.06] dark:border-white/[0.06] text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/[0.06]"
+                    ? "bg-accent border-accent text-white"
+                    : "bg-page dark:bg-white/[0.04] border-ink/[0.06] dark:border-white/[0.06] text-ink-2 dark:text-white/60 hover:bg-parchment-2 dark:hover:bg-white/[0.06]"
                 )}
                 onClick={() => loadText(item.id, item.content)}
               >

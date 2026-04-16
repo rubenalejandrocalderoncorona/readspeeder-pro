@@ -2,50 +2,64 @@
 
 /* ── Tailwind v4 theme tokens ────────────────────────────────────────────── */
 @theme {
-  /* macOS system colors */
-  --color-mac-blue:        #007AFF;
-  --color-mac-blue-dark:   #0A84FF;
-  --color-mac-red:         #FF3B30;
-  --color-mac-green:       #34C759;
-  --color-mac-yellow:      #FF9F0A;
-  --color-mac-orange:      #FF6D00;
+  /* ── Ink & Parchment palette ── */
+  --color-ink:           #1a1714;
+  --color-ink-2:         #3d3a36;
+  --color-ink-3:         #6b6560;
+  --color-ink-4:         #9e9890;
+  --color-ink-5:         #c8c2ba;
 
-  /* Backgrounds */
-  --color-mac-bg:          #f0f0f0;
-  --color-mac-bg-dark:     #1c1c1e;
-  --color-mac-surface:     #ffffff;
-  --color-mac-surface-dark:#2c2c2e;
-  --color-mac-sidebar:     #f5f5f7;
-  --color-mac-sidebar-dark:#252528;
+  --color-parchment:     #faf8f5;
+  --color-parchment-2:   #f3f0eb;
+  --color-parchment-3:   #ece8e1;
+  --color-parchment-4:   #e0dbd2;
 
-  /* Border radius */
-  --radius-mac:   8px;
-  --radius-mac-lg:12px;
-  --radius-mac-xl:18px;
+  --color-page:          #ffffff;
+  --color-page-dark:     #1c1a17;
 
-  /* Shadows */
-  --shadow-mac:    0 1px 3px rgba(0,0,0,0.10), 0 1px 2px rgba(0,0,0,0.06);
-  --shadow-mac-md: 0 4px 12px rgba(0,0,0,0.10), 0 2px 6px rgba(0,0,0,0.06);
-  --shadow-mac-lg: 0 8px 30px rgba(0,0,0,0.12), 0 4px 10px rgba(0,0,0,0.08);
+  /* ── Dark mode surfaces ── */
+  --color-surface-dark:  #252320;
+  --color-sidebar-dark:  #201f1c;
 
-  /* Font */
-  --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text",
-               "Helvetica Neue", Arial, sans-serif;
-  --font-mono: "SF Mono", Monaco, "Cascadia Code", "Fira Code", monospace;
-  --font-serif: "New York", "Georgia", serif;
+  /* ── Accent: warm amber/ochre ── */
+  --color-accent:        #c17d2e;
+  --color-accent-light:  #e8a84c;
+  --color-accent-dim:    rgba(193,125,46,0.12);
 
-  /* Animations */
-  --animate-phrase-appear: phraseAppear 0.08s ease-out;
+  /* ── System status ── */
+  --color-ok:            #2d7d4f;
+  --color-warn:          #b45309;
+  --color-danger:        #b91c1c;
+  --color-blue:          #2a6fdb;
+
+  /* ── Border radius ── */
+  --radius-sm:   4px;
+  --radius-md:   8px;
+  --radius-lg:  12px;
+  --radius-xl:  18px;
+
+  /* ── Shadows ── */
+  --shadow-sm:   0 1px 2px rgba(26,23,20,0.06), 0 1px 4px rgba(26,23,20,0.04);
+  --shadow-md:   0 2px 8px rgba(26,23,20,0.08), 0 4px 16px rgba(26,23,20,0.05);
+  --shadow-lg:   0 4px 24px rgba(26,23,20,0.10), 0 8px 40px rgba(26,23,20,0.06);
+
+  /* ── Typography ── */
+  --font-sans:  -apple-system, BlinkMacSystemFont, "Inter", "Helvetica Neue", Arial, sans-serif;
+  --font-serif: "New York", "Iowan Old Style", "Georgia", serif;
+  --font-mono:  "SF Mono", "JetBrains Mono", "Fira Code", monospace;
+
+  /* ── Animations ── */
+  --animate-phrase-appear: phraseAppear 0.09s ease-out;
   --animate-pulse-dot:     pulseDot 1.5s ease-in-out infinite;
-  --animate-fade-in:       fadeIn 0.15s ease-out;
+  --animate-fade-in:       fadeIn 0.18s ease-out;
 
   @keyframes phraseAppear {
-    from { opacity: 0; transform: scale(0.97); }
-    to   { opacity: 1; transform: scale(1);    }
+    from { opacity: 0; transform: translateY(4px) scale(0.98); }
+    to   { opacity: 1; transform: translateY(0)   scale(1);    }
   }
   @keyframes pulseDot {
-    0%, 100% { opacity: 1;   transform: scale(1);   }
-    50%       { opacity: 0.4; transform: scale(0.75);}
+    0%, 100% { opacity: 1;   transform: scale(1);    }
+    50%      { opacity: 0.3; transform: scale(0.65); }
   }
   @keyframes fadeIn {
     from { opacity: 0; }
@@ -53,63 +67,58 @@
   }
 }
 
-/* ── Base styles ─────────────────────────────────────────────────────────── */
+/* ── Base ────────────────────────────────────────────────────────────────── */
 @layer base {
   *, *::before, *::after {
+    box-sizing: border-box;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    box-sizing: border-box;
   }
 
   html, body {
     height: 100%;
     overflow: hidden;
     font-family: var(--font-sans);
-    background-color: var(--color-mac-bg);
-    color: #1d1d1f;
-    user-select: none;
+    background-color: var(--color-parchment);
+    color: var(--color-ink);
   }
 
   html.dark body {
-    background-color: var(--color-mac-bg-dark);
-    color: #f5f5f7;
+    background-color: var(--color-page-dark);
+    color: #e8e4de;
   }
 
-  /* macOS-style thin scrollbars */
-  ::-webkit-scrollbar { width: 5px; height: 5px; }
+  ::-webkit-scrollbar       { width: 4px; height: 4px; }
   ::-webkit-scrollbar-track { background: transparent; }
   ::-webkit-scrollbar-thumb {
-    background: rgba(0,0,0,0.18);
+    background: rgba(26,23,20,0.15);
     border-radius: 99px;
   }
-  html.dark ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.18); }
+  html.dark ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.12); }
 
-  .reader-text { user-select: text; }
+  .reader-text { user-select: text; cursor: text; }
 }
 
-/* ── Custom utility classes ──────────────────────────────────────────────── */
+/* ── Utilities ───────────────────────────────────────────────────────────── */
 @layer utilities {
-  /* macOS vibrancy sidebar / titlebar effect */
-  .mac-vibrancy {
-    background: rgba(246, 246, 248, 0.88);
-    backdrop-filter: saturate(180%) blur(20px);
-    -webkit-backdrop-filter: saturate(180%) blur(20px);
+  .sidebar-blur {
+    background: rgba(243,240,235,0.92);
+    backdrop-filter: saturate(160%) blur(20px);
+    -webkit-backdrop-filter: saturate(160%) blur(20px);
   }
-  html.dark .mac-vibrancy {
-    background: rgba(38, 38, 40, 0.88);
+  html.dark .sidebar-blur {
+    background: rgba(32,31,28,0.92);
   }
 
-  /* Glass card */
   .glass {
-    background: rgba(255, 255, 255, 0.75);
-    backdrop-filter: blur(16px) saturate(160%);
-    -webkit-backdrop-filter: blur(16px) saturate(160%);
+    background: rgba(255,255,255,0.7);
+    backdrop-filter: blur(16px) saturate(150%);
+    -webkit-backdrop-filter: blur(16px) saturate(150%);
   }
   html.dark .glass {
-    background: rgba(44, 44, 46, 0.80);
+    background: rgba(37,35,32,0.82);
   }
 
-  /* Tauri window drag */
   .drag-region  { -webkit-app-region: drag;    app-region: drag;    }
   .no-drag      { -webkit-app-region: no-drag; app-region: no-drag; }
 }

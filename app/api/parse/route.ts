@@ -12,8 +12,8 @@ export async function POST(req: NextRequest) {
 
     if (ext === "pdf") {
       // eslint-disable-next-line @typescript-eslint/no-require-imports
-      const pdfParse = require("pdf-parse") as (b: Buffer) => Promise<{ text: string }>;
-      const data = await pdfParse(buffer);
+      const pdfParse = require("pdf-parse/lib/pdf-parse.js") as (b: Buffer, opts?: Record<string,unknown>) => Promise<{ text: string }>;
+      const data = await pdfParse(buffer, { max: 0 });
       const cleaned = cleanText(data.text);
       const title = cleaned.split("\n")[0].trim().slice(0, 80) || "Untitled PDF";
       return NextResponse.json({ title, content: cleaned, wordCount: countWords(cleaned) });

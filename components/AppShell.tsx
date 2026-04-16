@@ -27,11 +27,11 @@ export default function AppShell() {
   }, [theme]);
 
   return (
-    <div className="flex flex-col h-screen overflow-hidden bg-mac-bg dark:bg-mac-bg-dark">
+    <div className="flex flex-col h-screen overflow-hidden bg-parchment dark:bg-page-dark">
       <TitleBar />
       <div className="flex flex-1 min-h-0 overflow-hidden">
         <Sidebar />
-        <main className="flex-1 overflow-hidden bg-mac-bg dark:bg-mac-bg-dark">
+        <main className="flex-1 overflow-hidden bg-parchment dark:bg-page-dark">
           {activeView === "lessons"  && <LessonsView />}
           {activeView === "progress" && <ProgressView />}
           {activeView === "tools"    && <ToolsView />}

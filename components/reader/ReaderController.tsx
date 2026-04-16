@@ -23,8 +23,8 @@ interface ReaderControllerProps {
 export function ReaderController(p: ReaderControllerProps) {
   if (p.countdown !== null) {
     return (
-      <div className="border-t border-black/[0.06] dark:border-white/[0.06] bg-white/50 dark:bg-white/[0.02] px-6 py-6 flex flex-col items-center gap-2">
-        <span className="text-5xl font-bold tabular-nums text-mac-blue animate-[phraseAppear_0.08s_ease-out]">
+      <div className="border-t border-ink/[0.06] dark:border-white/[0.06] bg-page/50 dark:bg-white/[0.02] px-6 py-6 flex flex-col items-center gap-2">
+        <span className="text-5xl font-bold tabular-nums text-accent animate-[phraseAppear_0.08s_ease-out]">
           {p.countdown}
         </span>
         <span className="text-[12px] text-gray-400">Get ready…</span>
@@ -34,8 +34,8 @@ export function ReaderController(p: ReaderControllerProps) {
 
   if (p.isComplete) {
     return (
-      <div className="border-t border-black/[0.06] dark:border-white/[0.06] bg-white/50 dark:bg-white/[0.02] px-6 py-5 flex flex-col items-center gap-3">
-        <p className="text-[15px] font-semibold text-mac-green">Exercise complete!</p>
+      <div className="border-t border-ink/[0.06] dark:border-white/[0.06] bg-page/50 dark:bg-white/[0.02] px-6 py-5 flex flex-col items-center gap-3">
+        <p className="text-[15px] font-semibold text-ok">Exercise complete!</p>
         <div className="flex gap-2">
           <MacButton variant="primary" onClick={p.onStart}>
             <Play size={13} /> Read Again
@@ -47,29 +47,29 @@ export function ReaderController(p: ReaderControllerProps) {
   }
 
   return (
-    <div className="border-t border-black/[0.06] dark:border-white/[0.06] bg-white/50 dark:bg-white/[0.02] backdrop-blur-sm px-5 py-3 flex flex-col gap-2.5 shrink-0">
+    <div className="border-t border-ink/[0.06] dark:border-white/[0.06] bg-page/50 dark:bg-white/[0.02] backdrop-blur-sm px-5 py-3 flex flex-col gap-2.5 shrink-0">
       <MacProgressBar
         value={p.progress * 100}
-        color={p.isAutoPhase ? "bg-mac-yellow" : "bg-mac-blue"}
+        color={p.isAutoPhase ? "bg-warn" : "bg-accent"}
       />
 
       <div className="flex items-center justify-between">
         {/* Stats */}
         <div className="flex items-center gap-4">
-          <span className="text-[13px] font-semibold tabular-nums text-gray-700 dark:text-gray-300">
+          <span className="text-[13px] font-semibold tabular-nums text-ink-2 dark:text-white/70">
             {p.currentWpm > 0 ? `${p.currentWpm} WPM` : "—"}
           </span>
           {p.showConcentration && p.concentrationScore !== undefined && (
             <span className={clsx(
               "text-[12px] font-medium tabular-nums",
-              p.concentrationScore >= 75 ? "text-mac-green" :
-              p.concentrationScore >= 50 ? "text-mac-yellow" : "text-mac-red"
+              p.concentrationScore >= 75 ? "text-ok" :
+              p.concentrationScore >= 50 ? "text-warn" : "text-danger"
             )}>
               {p.concentrationScore}% focus
             </span>
           )}
           {p.isAutoPhase && (
-            <span className="text-[11px] font-semibold text-mac-yellow uppercase tracking-wide">Auto</span>
+            <span className="text-[11px] font-semibold text-warn uppercase tracking-wide">Auto</span>
           )}
         </div>
 
@@ -94,7 +94,7 @@ export function ReaderController(p: ReaderControllerProps) {
       </div>
 
       {!p.isRunning && (
-        <p className="text-[11px] text-gray-300 dark:text-gray-600 text-center">
+        <p className="text-[11px] text-ink-5 dark:text-white/20 text-center">
           Space or → to advance · ← to go back
         </p>
       )}

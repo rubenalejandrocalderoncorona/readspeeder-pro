@@ -57,11 +57,11 @@ export default function LessonsView() {
   return (
     <div className="flex h-full">
       {/* ── Lesson list ─────────────────────────────────────────────── */}
-      <div className="w-52 shrink-0 border-r border-black/[0.07] dark:border-white/[0.06] overflow-y-auto bg-mac-sidebar dark:bg-mac-sidebar-dark">
+      <div className="w-52 shrink-0 border-r border-ink/[0.07] dark:border-white/[0.05] overflow-y-auto bg-parchment-2/60 dark:bg-surface-dark/60">
         <div className="py-3 px-2">
           {LESSON_GROUPS.map((group) => (
             <div key={group.name} className="mb-4">
-              <p className="px-2 mb-1 text-[10px] font-semibold uppercase tracking-widest text-gray-400 dark:text-gray-500">
+          <p className="px-2 mb-1 text-[9px] font-bold uppercase tracking-[0.12em] text-ink-5 dark:text-white/20">
                 {group.name}
               </p>
               {group.ids.map((id) => {
@@ -75,20 +75,20 @@ export default function LessonsView() {
                     key={id}
                     onClick={() => !isLocked && setActiveLesson(id as any)}
                     className={clsx(
-                      "flex items-center gap-2 w-full px-2.5 py-[7px] rounded-[8px] text-[13px] text-left transition-all duration-100",
-                      isActive  && "bg-mac-blue text-white font-medium",
-                      !isActive && !isLocked && "text-gray-700 dark:text-gray-300 hover:bg-black/[0.05] dark:hover:bg-white/[0.05]",
-                      isLocked  && "text-gray-300 dark:text-gray-600 cursor-not-allowed"
+                      "flex items-center gap-2 w-full px-2.5 py-[7px] rounded-[7px] text-[13px] text-left transition-all duration-100",
+                      isActive  && "bg-accent text-white font-medium",
+                      !isActive && !isLocked && "text-ink-2 dark:text-white/60 hover:bg-ink/[0.05] dark:hover:bg-white/[0.05]",
+                      isLocked  && "text-ink-5 dark:text-white/20 cursor-not-allowed"
                     )}
                   >
                     <span className="shrink-0">
-                      {isLocked  ? <Lock size={11} className="text-gray-300 dark:text-gray-600" /> :
-                       done      ? <CheckCircle2 size={11} className={isActive ? "text-white/80" : "text-mac-green"} /> :
-                                   <Circle size={11} className={isActive ? "text-white/70" : "text-gray-300 dark:text-gray-600"} />}
+                      {isLocked  ? <Lock size={11} className="text-ink-5 dark:text-white/20" /> :
+                       done      ? <CheckCircle2 size={11} className={isActive ? "text-white/80" : "text-ok"} /> :
+                                   <Circle size={11} className={isActive ? "text-white/70" : "text-ink-5 dark:text-white/20"} />}
                     </span>
                     <span className="flex-1">{lesson.name}</span>
                     {lp && lp.completedExercises > 0 && !isLocked && (
-                      <span className={clsx("text-[10px]", isActive ? "text-white/60" : "text-gray-400")}>
+                      <span className={clsx("text-[10px]", isActive ? "text-white/60" : "text-ink-4 dark:text-white/25")}>
                         {lp.completedExercises}/15
                       </span>
                     )}
@@ -103,17 +103,17 @@ export default function LessonsView() {
       {/* ── Main area ───────────────────────────────────────────────── */}
       <div className="flex-1 flex flex-col min-w-0">
         {/* Header */}
-        <div className="px-6 py-3 bg-white/60 dark:bg-white/[0.03] border-b border-black/[0.06] dark:border-white/[0.06] flex items-center justify-between shrink-0 backdrop-blur-sm">
+        <div className="px-6 py-3 bg-page/60 dark:bg-white/[0.02] border-b border-ink/[0.06] dark:border-white/[0.06] flex items-center justify-between shrink-0 backdrop-blur-sm">
           <div>
             <div className="flex items-center gap-2 flex-wrap">
-              <h2 className="text-[15px] font-semibold text-gray-900 dark:text-gray-100">{lessonConfig.name}</h2>
+              <h2 className="text-[15px] font-semibold text-ink dark:text-white/90">{lessonConfig.name}</h2>
               <MacBadge color="blue">{lessonConfig.group}</MacBadge>
               {lessonConfig.doublePass && <MacBadge color="yellow">Double Pass</MacBadge>}
               {lessonConfig.measureConcentration && <MacBadge color="green">Concentration</MacBadge>}
             </div>
-            <p className="text-[12px] text-gray-400 dark:text-gray-500 mt-0.5">{lessonConfig.description}</p>
+            <p className="text-[12px] text-ink-4 dark:text-white/30 mt-0.5">{lessonConfig.description}</p>
           </div>
-          <p className="text-[12px] text-gray-400 dark:text-gray-500 shrink-0 ml-4">
+          <p className="text-[12px] text-ink-4 dark:text-white/30 shrink-0 ml-4">
             {progress?.completedExercises ?? 0}/15
           </p>
         </div>
@@ -122,29 +122,29 @@ export default function LessonsView() {
         {phrases.length === 0 ? (
           <div className="flex-1 flex flex-col items-center justify-center px-8 gap-6">
             <div className="text-center">
-              <p className="text-[15px] font-semibold text-gray-700 dark:text-gray-300 mb-1">No text loaded</p>
-              <p className="text-[13px] text-gray-400 dark:text-gray-500">Upload a file or pick one from your library.</p>
+              <p className="text-[15px] font-semibold text-ink-2 dark:text-white/60 mb-1">No text loaded</p>
+              <p className="text-[13px] text-ink-4 dark:text-white/30">Upload a file or pick one from your library.</p>
             </div>
             <div className="w-full max-w-md">
               <FileUploader onLoaded={() => {}} />
             </div>
             {library.length > 0 && (
               <div className="w-full max-w-md">
-                <p className="text-[11px] font-semibold uppercase tracking-widest text-gray-400 dark:text-gray-500 mb-2">Library</p>
+                <p className="text-[11px] font-bold uppercase tracking-[0.12em] text-ink-5 dark:text-white/20 mb-2">Library</p>
                 <div className="flex flex-col gap-1">
                   {library.map((item) => (
                     <button
                       key={item.id}
                       onClick={() => loadText(item.id)}
                       className={clsx(
-                        "flex items-center justify-between px-3 py-2.5 rounded-[10px] text-[13px] transition-all",
+                        "flex items-center justify-between px-3 py-2.5 rounded-[8px] text-[13px] transition-all",
                         selectedTextId === item.id
-                          ? "bg-mac-blue text-white"
-                          : "bg-white dark:bg-white/[0.04] border border-black/[0.07] dark:border-white/[0.07] text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/[0.06]"
+                          ? "bg-accent text-white"
+                          : "bg-page dark:bg-white/[0.04] border border-ink/[0.07] dark:border-white/[0.07] text-ink-2 dark:text-white/60 hover:bg-parchment-2 dark:hover:bg-white/[0.06]"
                       )}
                     >
                       <span className="truncate font-medium">{item.title}</span>
-                      <span className={clsx("text-[11px] ml-2 shrink-0", selectedTextId === item.id ? "text-white/60" : "text-gray-400")}>
+                      <span className={clsx("text-[11px] ml-2 shrink-0", selectedTextId === item.id ? "text-white/60" : "text-ink-4 dark:text-white/25")}>
                         {item.wordCount.toLocaleString()} w
                       </span>
                     </button>
@@ -166,10 +166,10 @@ export default function LessonsView() {
                 />
               ) : (
                 <div className="flex flex-col items-center justify-center h-full gap-2">
-                  <p className="text-[15px] font-medium text-gray-400 dark:text-gray-500">Ready</p>
-                  <p className="text-[12px] text-gray-300 dark:text-gray-600">{phrases.length} phrases loaded</p>
+                  <p className="text-[15px] font-medium text-ink-4 dark:text-white/30">Ready</p>
+                  <p className="text-[12px] text-ink-5 dark:text-white/20">{phrases.length} phrases loaded</p>
                   {autoSpeedWpm && lessonConfig.doublePass && (
-                    <p className="text-[12px] text-mac-yellow mt-1">Auto speed: {autoSpeedWpm} WPM</p>
+                    <p className="text-[12px] text-accent mt-1">Auto speed: {autoSpeedWpm} WPM</p>
                   )}
                 </div>
               )}

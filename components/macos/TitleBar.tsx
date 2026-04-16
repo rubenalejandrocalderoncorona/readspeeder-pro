@@ -1,27 +1,20 @@
 "use client";
 
-import React from "react";
-import { clsx } from "clsx";
+import React, { useEffect, useState } from "react";
 
 export function TitleBar({ title = "ReadSpeeder Pro" }: { title?: string }) {
+  const [isTauri, setIsTauri] = useState(false);
+  useEffect(() => { setIsTauri("__TAURI__" in window); }, []);
+  if (!isTauri) return null;
+
   return (
-    <div className={clsx(
-      "h-11 flex items-center justify-between px-4 shrink-0 relative",
-      "mac-vibrancy border-b border-black/[0.07] dark:border-white/[0.07]",
-      "drag-region select-none"
-    )}>
-      {/* Traffic lights */}
-      <div className="flex items-center gap-2 no-drag">
-        <div className="w-3 h-3 rounded-full bg-[#FF5F57] hover:brightness-90 transition-all" />
-        <div className="w-3 h-3 rounded-full bg-[#FEBC2E] hover:brightness-90 transition-all" />
-        <div className="w-3 h-3 rounded-full bg-[#28C840] hover:brightness-90 transition-all" />
+    <div className="h-10 flex items-center justify-center shrink-0 relative drag-region select-none border-b border-black/[0.06] dark:border-white/[0.05] sidebar-blur">
+      <div className="flex items-center gap-1.5 absolute left-3 no-drag">
+        <div className="w-3 h-3 rounded-full bg-[#FF5F57]" />
+        <div className="w-3 h-3 rounded-full bg-[#FEBC2E]" />
+        <div className="w-3 h-3 rounded-full bg-[#28C840]" />
       </div>
-
-      <span className="absolute left-1/2 -translate-x-1/2 text-[13px] font-semibold text-gray-600 dark:text-gray-400 tracking-tight">
-        {title}
-      </span>
-
-      <div className="w-14" />
+      <span className="text-[12px] font-medium text-ink-3 dark:text-white/40 tracking-wide">{title}</span>
     </div>
   );
 }

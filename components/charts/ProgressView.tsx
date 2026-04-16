@@ -41,7 +41,7 @@ export default function ProgressView() {
   const low = allWpms[third] ?? 0;
   const high = allWpms[2 * third] ?? 0;
   const barColor = (wpm: number) =>
-    wpm >= high ? "#34C759" : wpm >= low ? "#FF9F0A" : "#FF3B30";
+    wpm >= high ? "#2d7d4f" : wpm >= low ? "#b45309" : "#b91c1c";
 
   // Daily words
   const dailyWords = useMemo(() => {
@@ -79,7 +79,7 @@ export default function ProgressView() {
 
   if (exerciseHistory.length === 0) {
     return (
-      <div className="flex items-center justify-center h-full text-gray-400 dark:text-gray-600">
+      <div className="flex items-center justify-center h-full text-ink-4 dark:text-white/20">
         <div className="text-center">
           <p className="text-base font-medium">No progress yet</p>
           <p className="text-sm mt-1">Complete exercises in Lessons to see your progress here.</p>
@@ -91,7 +91,7 @@ export default function ProgressView() {
   return (
     <div className="flex flex-col h-full overflow-y-auto px-6 py-4 gap-6">
       <div className="flex items-center justify-between">
-        <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Progress</h2>
+        <h2 className="text-lg font-semibold text-ink dark:text-white/90">Progress</h2>
         <div className="flex gap-2">
           <MacButton size="sm" variant="ghost" onClick={() => setShowCsv((v) => !v)}>
             <Download size={13} className="mr-1.5" /> CSV
@@ -119,7 +119,7 @@ export default function ProgressView() {
             <textarea
               readOnly
               value={csvData}
-              className="w-full h-32 text-xs font-mono bg-transparent resize-none outline-none text-gray-600 dark:text-gray-400"
+              className="w-full h-32 text-xs font-mono bg-transparent resize-none outline-none text-ink-3 dark:text-white/40"
             />
           </div>
         </MacCard>
@@ -128,8 +128,8 @@ export default function ProgressView() {
       {/* Segment Speeds */}
       <MacCard>
         <div className="p-4">
-          <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3">Segment Speeds</h3>
-          <div className="text-xs text-gray-400 dark:text-gray-500 mb-3">
+          <h3 className="text-sm font-semibold text-ink-2 dark:text-white/60 mb-3">Segment Speeds</h3>
+          <div className="text-xs text-ink-4 dark:text-white/30 mb-3">
             Green = top third · Yellow = middle · Red = bottom third. Shaded top = concentration deficit.
           </div>
           <ResponsiveContainer width="100%" height={220}>
@@ -142,11 +142,11 @@ export default function ProgressView() {
                   if (!active || !payload?.length) return null;
                   const d = payload[0].payload;
                   return (
-                    <div className="glass dark:bg-gray-900/90 border border-black/[0.08] rounded-mac p-2 text-xs shadow-mac-md">
+                    <div className="glass border border-ink/[0.08] rounded-[8px] p-2 text-xs shadow-md">
                       <div className="font-semibold mb-1">Segment {d.index} · Lesson {d.lesson}</div>
                       <div>{d.wpm} WPM · Net: {d.netWpm}</div>
                       <div>Concentration: {d.concentration}%</div>
-                      <div className="text-gray-400">{d.date}</div>
+                      <div className="text-ink-4">{d.date}</div>
                     </div>
                   );
                 }}
@@ -165,14 +165,14 @@ export default function ProgressView() {
         {/* Daily Words */}
         <MacCard>
           <div className="p-4">
-            <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3">Daily Words</h3>
+            <h3 className="text-sm font-semibold text-ink-2 dark:text-white/60 mb-3">Daily Words</h3>
             <ResponsiveContainer width="100%" height={160}>
               <BarChart data={dailyWords} margin={{ top: 4, right: 4, bottom: 4, left: -10 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="rgba(0,0,0,0.05)" />
                 <XAxis dataKey="date" tick={{ fontSize: 9 }} />
                 <YAxis tick={{ fontSize: 10 }} />
                 <Tooltip formatter={(v) => [`${Number(v).toLocaleString()} words`]} />
-                <Bar dataKey="words" fill="#007AFF" radius={[3, 3, 0, 0]} fillOpacity={0.8} />
+                <Bar dataKey="words" fill="#c17d2e" radius={[3, 3, 0, 0]} fillOpacity={0.75} />
               </BarChart>
             </ResponsiveContainer>
           </div>
@@ -181,7 +181,7 @@ export default function ProgressView() {
         {/* Daily Speeds */}
         <MacCard>
           <div className="p-4">
-            <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3">Daily Speeds</h3>
+            <h3 className="text-sm font-semibold text-ink-2 dark:text-white/60 mb-3">Daily Speeds</h3>
             <ResponsiveContainer width="100%" height={160}>
               <LineChart data={dailySpeeds} margin={{ top: 4, right: 4, bottom: 4, left: -10 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="rgba(0,0,0,0.05)" />
@@ -191,9 +191,9 @@ export default function ProgressView() {
                 <Line
                   type="monotone"
                   dataKey="avgWpm"
-                  stroke="#34C759"
+                  stroke="#2d7d4f"
                   strokeWidth={2}
-                  dot={{ fill: "#34C759", r: 3 }}
+                  dot={{ fill: "#2d7d4f", r: 3 }}
                 />
               </LineChart>
             </ResponsiveContainer>

@@ -28,7 +28,7 @@ function Stationary({ lesson, phrases, currentIndex, isAutoPhase, useSerif }: Ph
     <div className="flex flex-col items-center justify-center h-full gap-5 px-10">
       {/* Phrase above */}
       {lesson.showSurrounding && currentIndex > 0 && (
-        <p className={clsx("text-[15px] text-gray-300 dark:text-gray-600 text-center max-w-xl", font)}>
+        <p className={clsx("text-[15px] text-ink-5 dark:text-white/15 text-center max-w-xl", font)}>
           {phrases[currentIndex - 1]}
         </p>
       )}
@@ -41,8 +41,8 @@ function Stationary({ lesson, phrases, currentIndex, isAutoPhase, useSerif }: Ph
           "animate-[phraseAppear_0.08s_ease-out]",
           size, font,
           lesson.showBackground
-            ? "bg-mac-blue text-white shadow-[0_4px_20px_rgba(0,122,255,0.35)]"
-            : "text-gray-900 dark:text-gray-100"
+            ? "bg-accent text-white shadow-[0_4px_20px_rgba(193,125,46,0.35)]"
+            : "text-ink dark:text-white/90"
         )}
       >
         {phrase}
@@ -50,7 +50,7 @@ function Stationary({ lesson, phrases, currentIndex, isAutoPhase, useSerif }: Ph
 
       {/* Phrase below */}
       {lesson.showSurrounding && currentIndex < phrases.length - 1 && (
-        <p className={clsx("text-[15px] text-gray-300 dark:text-gray-600 text-center max-w-xl", font)}>
+        <p className={clsx("text-[15px] text-ink-5 dark:text-white/15 text-center max-w-xl", font)}>
           {phrases[currentIndex + 1]}
         </p>
       )}
@@ -78,12 +78,12 @@ function Horizontal({ lesson, phrases, currentIndex, isAutoPhase, useSerif }: Ph
             "px-3 py-1.5 rounded-[6px] whitespace-nowrap overflow-hidden transition-all duration-100",
             active
               ? lesson.showBackground
-                ? "bg-mac-blue text-white font-semibold"
-                : "text-gray-900 dark:text-white font-semibold"
-              : "text-gray-300 dark:text-gray-600"
+                ? "bg-accent text-white font-semibold"
+                : "text-ink dark:text-white font-semibold"
+              : "text-ink-5 dark:text-white/20"
           )}>
             {active && lesson.focusDots && (
-              <span className="inline-block w-1.5 h-1.5 rounded-full bg-mac-blue mr-2 mb-0.5 animate-[pulseDot_1.5s_ease-in-out_infinite]" />
+              <span className="inline-block w-1.5 h-1.5 rounded-full bg-accent mr-2 mb-0.5 animate-[pulseDot_1.5s_ease-in-out_infinite]" />
             )}
             {phrase}
           </div>
@@ -112,8 +112,8 @@ function BlackGray({ lesson, phrases, currentIndex, isAutoPhase, useSerif }: Phr
             return (
               <span key={abs} className={clsx(
                 "transition-colors duration-75",
-                active  ? "text-gray-900 dark:text-white font-medium" :
-                abs % 2 === 0 ? "text-gray-600 dark:text-gray-300" : "text-gray-300 dark:text-gray-600"
+                active  ? "text-ink dark:text-white font-medium" :
+                abs % 2 === 0 ? "text-ink-2 dark:text-white/50" : "text-ink-5 dark:text-white/15"
               )}>
                 {phrase}{" "}
               </span>
@@ -128,11 +128,11 @@ function BlackGray({ lesson, phrases, currentIndex, isAutoPhase, useSerif }: Phr
             return (
               <span key={abs} className={clsx(
                 "block transition-colors duration-75",
-                active  ? "text-gray-900 dark:text-white font-semibold" :
-                abs % 2 === 0 ? "text-gray-600 dark:text-gray-300" : "text-gray-300 dark:text-gray-600"
+                active  ? "text-ink dark:text-white font-semibold" :
+                abs % 2 === 0 ? "text-ink-2 dark:text-white/50" : "text-ink-5 dark:text-white/15"
               )}>
                 {active && lesson.focusDots && (
-                  <span className="inline-block w-1.5 h-1.5 rounded-full bg-mac-blue mr-2 mb-0.5 align-middle animate-[pulseDot_1.5s_ease-in-out_infinite]" />
+                  <span className="inline-block w-1.5 h-1.5 rounded-full bg-accent mr-2 mb-0.5 align-middle animate-[pulseDot_1.5s_ease-in-out_infinite]" />
                 )}
                 {phrase}
               </span>
@@ -147,7 +147,7 @@ function BlackGray({ lesson, phrases, currentIndex, isAutoPhase, useSerif }: Phr
 
 function AutoBadge() {
   return (
-    <div className="mt-4 inline-flex items-center px-2.5 py-1 rounded-full bg-mac-yellow/15 text-mac-yellow text-[11px] font-semibold uppercase tracking-wide">
+    <div className="mt-4 inline-flex items-center px-2.5 py-1 rounded-full bg-warn/10 text-warn text-[11px] font-semibold uppercase tracking-wide">
       Auto Speed
     </div>
   );

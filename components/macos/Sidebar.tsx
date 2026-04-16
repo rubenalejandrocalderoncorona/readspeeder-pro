@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { BookOpen, BarChart2, Wrench, Library, HelpCircle } from "lucide-react";
+import { BookOpen, BarChart2, Wrench, Library, HelpCircle, Sun, Moon, GitBranch } from "lucide-react";
 import { clsx } from "clsx";
 import { useAppStore } from "@/store/useAppStore";
 import type { AppState } from "@/store/useAppStore";
@@ -16,28 +16,41 @@ const NAV: { id: View; label: string; icon: React.ElementType }[] = [
   { id: "help",     label: "Help",     icon: HelpCircle },
 ];
 
+const REPO_URL = "https://github.com/rubenalejandrocalderoncorona/readspeeder-pro";
+const VERSION  = "0.1.0";
+
 export function Sidebar() {
-  const activeView   = useAppStore((s) => s.activeView);
-  const setActiveView = useAppStore((s) => s.setActiveView);
+  const activeView     = useAppStore((s) => s.activeView);
+  const setActiveView  = useAppStore((s) => s.setActiveView);
+  const theme          = useAppStore((s) => s.settings.theme);
+  const updateSettings = useAppStore((s) => s.updateSettings);
+
+  const isDark = theme === "dark" ||
+    (theme === "system" && typeof window !== "undefined" &&
+     window.matchMedia("(prefers-color-scheme: dark)").matches);
+
+  const toggleTheme = () => updateSettings({ theme: isDark ? "light" : "dark" });
 
   return (
-    <aside className="w-52 shrink-0 flex flex-col mac-vibrancy border-r border-black/[0.07] dark:border-white/[0.06] select-none">
-      {/* Brand */}
-      <div className="px-4 pt-5 pb-3 flex items-center gap-2.5">
-        <div className="w-8 h-8 rounded-[10px] bg-mac-blue flex items-center justify-center shadow-[0_2px_8px_rgba(0,122,255,0.4)]">
-          <BookOpen size={15} className="text-white" strokeWidth={2} />
-        </div>
-        <div>
-          <p className="text-[13px] font-semibold text-gray-900 dark:text-gray-100 leading-none">ReadSpeeder</p>
-          <p className="text-[10px] text-gray-400 dark:text-gray-500 mt-0.5">Pro</p>
+    <aside className="w-56 shrink-0 flex flex-col select-none sidebar-blur border-r border-ink/[0.07] dark:border-white/[0.05]">
+      {/* ── Brand ── */}
+      <div className="px-5 pt-6 pb-5">
+        <div className="flex items-center gap-3">
+          <div className="w-9 h-9 rounded-[10px] bg-accent flex items-center justify-center shadow-md shrink-0">
+            <BookOpen size={17} className="text-white" strokeWidth={1.8} />
+          </div>
+          <div>
+            <p className="text-[14px] font-semibold text-ink dark:text-white/90 leading-none tracking-tight">ReadSpeeder</p>
+            <p className="text-[10px] text-ink-4 dark:text-white/30 mt-0.5 tracking-widest uppercase font-medium">Pro</p>
+          </div>
         </div>
       </div>
 
-      {/* Divider */}
-      <div className="mx-4 h-px bg-black/[0.06] dark:bg-white/[0.06] mb-2" />
-
-      {/* Nav */}
-      <nav className="flex-1 px-2 flex flex-col gap-0.5">
+      {/* ── Nav ── */}
+      <nav className="flex-1 px-3 flex flex-col gap-0.5">
+        <p className="px-2 mb-2 text-[9px] font-bold uppercase tracking-[0.12em] text-ink-5 dark:text-white/20">
+          Navigation
+        </p>
         {NAV.map(({ id, label, icon: Icon }) => {
           const active = activeView === id;
           return (
@@ -45,24 +58,38 @@ export function Sidebar() {
               key={id}
               onClick={() => setActiveView(id)}
               className={clsx(
-                "flex items-center gap-2.5 w-full px-2.5 py-[7px] rounded-[8px] text-[13px] font-medium transition-all duration-100 text-left",
+                "flex items-center gap-3 w-full px-3 py-2 rounded-[7px] text-[13px] font-medium transition-all duration-150 text-left",
                 active
-                  ? "bg-mac-blue text-white shadow-[0_1px_3px_rgba(0,122,255,0.3)]"
-                  : "text-gray-700 dark:text-gray-300 hover:bg-black/[0.05] dark:hover:bg-white/[0.05]"
+                  ? "bg-accent text-white shadow-sm"
+                  : "text-ink-2 dark:text-white/60 hover:bg-ink/[0.05] dark:hover:bg-white/[0.05] hover:text-ink dark:hover:text-white/80"
               )}
             >
-              <Icon
-                size={15}
-                strokeWidth={active ? 2.2 : 1.8}
-                className={active ? "text-white" : "text-gray-400 dark:text-gray-500"}
-              />
+              <Icon size={15} strokeWidth={active ? 2.1 : 1.6}
+                className={active ? "text-white/90" : "text-ink-4 dark:text-white/30"} />
               {label}
             </button>
           );
         })}
       </nav>
 
-      <p className="pb-4 text-center text-[10px] text-gray-300 dark:text-gray-600">v1.0.0</p>
+      {/* ── Footer ── */}
+      <div className="px-3 pb-4 flex flex-col gap-2">
+        <div className="h-px bg-ink/[0.06] dark:bg-white/[0.06] mx-2 mb-1" />
+        <div className="flex items-center justify-between px-2">
+          <button onClick={toggleTheme}
+            className="flex items-center gap-1.5 text-[11px] text-ink-4 dark:text-white/30 hover:text-ink-2 dark:hover:text-white/60 transition-colors"
+            title={isDark ? "Switch to light" : "Switch to dark"}>
+            {isDark ? <Moon size={13} strokeWidth={1.6} /> : <Sun size={13} strokeWidth={1.6} />}
+            <span>{isDark ? "Dark" : "Light"}</span>
+          </button>
+          <a href={REPO_URL} target="_blank" rel="noopener noreferrer"
+            className="flex items-center gap-1 text-[10px] text-ink-5 dark:text-white/20 hover:text-accent dark:hover:text-accent-light transition-colors"
+            title="View on GitHub">
+            <GitBranch size={11} strokeWidth={1.6} />
+            v{VERSION}
+          </a>
+        </div>
+      </div>
     </aside>
   );
 }

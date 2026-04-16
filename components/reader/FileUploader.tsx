@@ -53,26 +53,26 @@ export function FileUploader({ onLoaded }: { onLoaded?: (n: number) => void }) {
         className={clsx(
           "border-2 border-dashed rounded-[12px] p-7 flex flex-col items-center gap-2.5 cursor-pointer transition-all duration-150",
           isDragging
-            ? "border-mac-blue bg-blue-50 dark:bg-blue-950/20 scale-[1.01]"
-            : "border-black/[0.10] dark:border-white/[0.10] hover:border-mac-blue/50 hover:bg-black/[0.015] dark:hover:bg-white/[0.015]"
+            ? "border-accent bg-accent/[0.04] scale-[1.01]"
+            : "border-ink/[0.10] dark:border-white/[0.10] hover:border-accent/50 hover:bg-ink/[0.015] dark:hover:bg-white/[0.015]"
         )}
       >
         <input ref={inputRef} type="file" accept=".txt,.pdf,.epub" className="hidden" onChange={(e) => { const f = e.target.files?.[0]; if (f) process(f); }} />
         {isProcessing
-          ? <div className="w-5 h-5 border-2 border-mac-blue border-t-transparent rounded-full animate-spin" />
-          : <Upload size={20} className="text-gray-300 dark:text-gray-600" strokeWidth={1.5} />
+          ? <div className="w-5 h-5 border-2 border-accent border-t-transparent rounded-full animate-spin" />
+          : <Upload size={20} className="text-ink-5 dark:text-white/20" strokeWidth={1.5} />
         }
-        <div className="text-[13px] text-gray-500 dark:text-gray-400 text-center">
+        <div className="text-[13px] text-ink-3 dark:text-white/40 text-center">
           {isProcessing ? "Processing…" : fileName
-            ? <span className="flex items-center gap-1.5 text-mac-green font-medium"><FileText size={13} />{fileName}</span>
-            : <><span className="text-mac-blue font-medium">Choose a file</span> or drag it here</>
+            ? <span className="flex items-center gap-1.5 text-ok font-medium"><FileText size={13} />{fileName}</span>
+            : <><span className="text-accent font-medium">Choose a file</span> or drag it here</>
           }
         </div>
-        <p className="text-[11px] text-gray-300 dark:text-gray-600">.txt · .pdf · .epub</p>
+        <p className="text-[11px] text-ink-5 dark:text-white/20">.txt · .pdf · .epub</p>
       </div>
 
       {error && (
-        <div className="flex items-start gap-2 px-3 py-2.5 rounded-[8px] bg-red-50 dark:bg-red-950/20 border border-red-100 dark:border-red-900/30 text-mac-red text-[12px]">
+        <div className="flex items-start gap-2 px-3 py-2.5 rounded-[8px] bg-danger/5 dark:bg-danger/10 border border-danger/20 dark:border-danger/20 text-danger text-[12px]">
           <AlertCircle size={13} className="shrink-0 mt-0.5" />
           {error}
         </div>

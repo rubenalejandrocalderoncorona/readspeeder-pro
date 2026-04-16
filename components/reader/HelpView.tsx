@@ -49,13 +49,13 @@ const sections = [
 export default function HelpView() {
   return (
     <div className="flex flex-col h-full overflow-y-auto px-6 py-4 gap-4">
-      <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Help & Instructions</h2>
+      <h2 className="text-lg font-semibold text-ink dark:text-white/90">Help & Instructions</h2>
       <div className="flex flex-col gap-3">
         {sections.map((s) => (
           <MacCard key={s.title}>
             <div className="p-4">
-              <h3 className="text-sm font-semibold text-gray-800 dark:text-gray-200 mb-1.5">{s.title}</h3>
-              <p className="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">{s.content}</p>
+              <h3 className="text-sm font-semibold text-ink dark:text-white/80 mb-1.5">{s.title}</h3>
+              <p className="text-sm text-ink-3 dark:text-white/40 leading-relaxed">{s.content}</p>
             </div>
           </MacCard>
         ))}
