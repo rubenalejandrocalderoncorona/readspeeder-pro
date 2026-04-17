@@ -26,31 +26,28 @@ function Stationary({ lesson, phrases, currentIndex, isAutoPhase, useSerif }: Ph
 
   return (
     <div className="flex flex-col items-center justify-center h-full gap-5 px-10">
-      {/* Phrase above */}
       {lesson.showSurrounding && currentIndex > 0 && (
-        <p className={clsx("text-[15px] text-ink-5 dark:text-white/15 text-center max-w-xl", font)}>
+        <p className={clsx("text-[15px] text-text-5 dark:text-text-5-dark text-center max-w-xl", font)}>
           {phrases[currentIndex - 1]}
         </p>
       )}
 
-      {/* Current phrase */}
       <div
         key={currentIndex}
         className={clsx(
-          "px-8 py-5 rounded-[16px] text-center leading-snug reader-text transition-all",
+          "px-8 py-5 rounded-[var(--radius-lg)] text-center leading-snug reader-text transition-all",
           "animate-[phraseAppear_0.08s_ease-out]",
           size, font,
           lesson.showBackground
-            ? "bg-accent text-white shadow-[0_4px_20px_rgba(193,125,46,0.35)]"
-            : "text-ink dark:text-white/90"
+            ? "bg-accent dark:bg-accent-dark text-white dark:text-[#111] shadow-[0_4px_20px_rgba(176,115,64,0.25)]"
+            : "text-text dark:text-text-dark"
         )}
       >
         {phrase}
       </div>
 
-      {/* Phrase below */}
       {lesson.showSurrounding && currentIndex < phrases.length - 1 && (
-        <p className={clsx("text-[15px] text-ink-5 dark:text-white/15 text-center max-w-xl", font)}>
+        <p className={clsx("text-[15px] text-text-5 dark:text-text-5-dark text-center max-w-xl", font)}>
           {phrases[currentIndex + 1]}
         </p>
       )}
@@ -75,15 +72,15 @@ function Horizontal({ lesson, phrases, currentIndex, isAutoPhase, useSerif }: Ph
         const active  = abs === currentIndex;
         return (
           <div key={abs} className={clsx(
-            "px-3 py-1.5 rounded-[6px] whitespace-nowrap overflow-hidden transition-all duration-100",
+            "px-3 py-1.5 rounded-[var(--radius-sm)] whitespace-nowrap overflow-hidden transition-all duration-100",
             active
               ? lesson.showBackground
-                ? "bg-accent text-white font-semibold"
-                : "text-ink dark:text-white font-semibold"
-              : "text-ink-5 dark:text-white/20"
+                ? "bg-accent dark:bg-accent-dark text-white dark:text-[#111] font-semibold"
+                : "text-text dark:text-text-dark font-semibold"
+              : "text-text-5 dark:text-text-5-dark"
           )}>
             {active && lesson.focusDots && (
-              <span className="inline-block w-1.5 h-1.5 rounded-full bg-accent mr-2 mb-0.5 animate-[pulseDot_1.5s_ease-in-out_infinite]" />
+              <span className="inline-block w-1.5 h-1.5 rounded-full bg-accent dark:bg-accent-dark mr-2 mb-0.5 animate-[pulseDot_1.5s_ease-in-out_infinite]" />
             )}
             {phrase}
           </div>
@@ -112,8 +109,8 @@ function BlackGray({ lesson, phrases, currentIndex, isAutoPhase, useSerif }: Phr
             return (
               <span key={abs} className={clsx(
                 "transition-colors duration-75",
-                active  ? "text-ink dark:text-white font-medium" :
-                abs % 2 === 0 ? "text-ink-2 dark:text-white/50" : "text-ink-5 dark:text-white/15"
+                active  ? "text-text dark:text-text-dark font-medium" :
+                abs % 2 === 0 ? "text-text-2 dark:text-text-2-dark" : "text-text-5 dark:text-text-5-dark"
               )}>
                 {phrase}{" "}
               </span>
@@ -128,11 +125,11 @@ function BlackGray({ lesson, phrases, currentIndex, isAutoPhase, useSerif }: Phr
             return (
               <span key={abs} className={clsx(
                 "block transition-colors duration-75",
-                active  ? "text-ink dark:text-white font-semibold" :
-                abs % 2 === 0 ? "text-ink-2 dark:text-white/50" : "text-ink-5 dark:text-white/15"
+                active  ? "text-text dark:text-text-dark font-semibold" :
+                abs % 2 === 0 ? "text-text-2 dark:text-text-2-dark" : "text-text-5 dark:text-text-5-dark"
               )}>
                 {active && lesson.focusDots && (
-                  <span className="inline-block w-1.5 h-1.5 rounded-full bg-accent mr-2 mb-0.5 align-middle animate-[pulseDot_1.5s_ease-in-out_infinite]" />
+                  <span className="inline-block w-1.5 h-1.5 rounded-full bg-accent dark:bg-accent-dark mr-2 mb-0.5 align-middle animate-[pulseDot_1.5s_ease-in-out_infinite]" />
                 )}
                 {phrase}
               </span>
@@ -147,7 +144,7 @@ function BlackGray({ lesson, phrases, currentIndex, isAutoPhase, useSerif }: Phr
 
 function AutoBadge() {
   return (
-    <div className="mt-4 inline-flex items-center px-2.5 py-1 rounded-full bg-warn/10 text-warn text-[11px] font-semibold uppercase tracking-wide">
+    <div className="mt-4 inline-flex items-center px-2.5 py-1 rounded-full bg-warn-bg text-warn dark:text-warn-dark text-[11px] font-semibold uppercase tracking-wide">
       Auto Speed
     </div>
   );

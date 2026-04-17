@@ -8,7 +8,6 @@ import { FileUploader } from "@/components/reader/FileUploader";
 import { useAppStore } from "@/store/useAppStore";
 import { segmentIntoPhrases, divideIntoExercises } from "@/lib/parser";
 
-// Sample classic titles bundled for demo
 const SAMPLE_CLASSICS = [
   { title: "Pride and Prejudice", author: "Jane Austen", wordCount: 122189, excerpt: "It is a truth universally acknowledged, that a single man in possession of a good fortune, must be in want of a wife. However little known the feelings or views of such a man may be on his first entering a neighbourhood, this truth is so well fixed in the minds of the surrounding families, that he is considered as the rightful property of some one or other of their daughters." },
   { title: "Moby Dick", author: "Herman Melville", wordCount: 206052, excerpt: "Call me Ishmael. Some years ago—never mind how long precisely—having little or no money in my purse, and nothing particular to interest me on shore, I thought I would sail about a little and see the watery part of the world. It is a way I have of driving off the spleen and regulating the circulation. Whenever I find myself growing grim about the mouth; whenever it is a damp, drizzly November in my soul; whenever I find myself involuntarily pausing before coffin warehouses." },
@@ -60,12 +59,10 @@ export default function LibraryView() {
     setShowAddText(false);
   };
 
-  const allItems = library;
-
   return (
     <div className="flex flex-col h-full overflow-y-auto px-6 py-4 gap-4">
       <div className="flex items-center justify-between">
-        <h2 className="text-lg font-semibold text-ink dark:text-white/90">Library</h2>
+        <h2 className="text-lg font-semibold text-text dark:text-text-dark">Library</h2>
         <MacButton size="sm" variant="primary" onClick={() => setShowAddText((v) => !v)}>
           <Plus size={13} className="mr-1" /> Add Text
         </MacButton>
@@ -73,7 +70,7 @@ export default function LibraryView() {
 
       {/* Upload */}
       <div>
-        <p className="text-xs text-ink-4 dark:text-white/30 mb-2 font-medium uppercase tracking-widest">Upload File</p>
+        <p className="label-mono text-text-4 dark:text-text-4-dark mb-2">Upload File</p>
         <FileUploader />
       </div>
 
@@ -81,20 +78,20 @@ export default function LibraryView() {
       {showAddText && (
         <MacCard>
           <div className="p-4 flex flex-col gap-3">
-            <h3 className="text-sm font-semibold text-ink-2 dark:text-white/60">Enter Your Own Text</h3>
+            <h3 className="text-sm font-semibold text-text-2 dark:text-text-2-dark">Enter Your Own Text</h3>
             <input
               type="text"
               placeholder="Title (optional)"
               value={newTitle}
               onChange={(e) => setNewTitle(e.target.value)}
-              className="w-full px-3 py-2 rounded-[8px] text-sm border border-ink/[0.08] dark:border-white/[0.08] bg-page dark:bg-white/[0.04] outline-none focus:ring-1 focus:ring-mac-blue text-ink dark:text-white/80"
+              className="w-full px-3 py-2 rounded-[var(--radius-sm)] text-sm border border-border dark:border-border-dark bg-bg dark:bg-bg-dark outline-none focus:ring-1 focus:ring-accent text-text dark:text-text-dark"
             />
             <textarea
               placeholder="Paste or enter text here…"
               value={newText}
               onChange={(e) => setNewText(e.target.value)}
               rows={6}
-              className="w-full px-3 py-2 rounded-[8px] text-sm border border-ink/[0.08] dark:border-white/[0.08] bg-page dark:bg-white/[0.04] outline-none focus:ring-1 focus:ring-mac-blue resize-none text-ink dark:text-white/80 reader-text"
+              className="w-full px-3 py-2 rounded-[var(--radius-sm)] text-sm border border-border dark:border-border-dark bg-bg dark:bg-bg-dark outline-none focus:ring-1 focus:ring-accent resize-none text-text dark:text-text-dark reader-text"
             />
             <div className="flex gap-2">
               <MacButton variant="primary" size="sm" onClick={saveCustomText}>Save</MacButton>
@@ -106,7 +103,7 @@ export default function LibraryView() {
 
       {/* Classic samples */}
       <div>
-        <p className="text-xs text-ink-4 dark:text-white/30 mb-2 font-medium uppercase tracking-widest">Classic Titles</p>
+        <p className="label-mono text-text-4 dark:text-text-4-dark mb-2">Classic Titles</p>
         <div className="grid grid-cols-2 gap-2">
           {SAMPLE_CLASSICS.map((s) => {
             const alreadyAdded = library.some((l) => l.title === s.title);
@@ -115,12 +112,12 @@ export default function LibraryView() {
                 <div className="p-3 flex flex-col gap-2">
                   <div className="flex items-start justify-between gap-2">
                     <div>
-                      <div className="text-sm font-medium text-ink dark:text-white/80">{s.title}</div>
-                      <div className="text-xs text-ink-4 dark:text-white/30">{s.author}</div>
+                      <div className="text-sm font-medium text-text dark:text-text-dark">{s.title}</div>
+                      <div className="text-xs text-text-4 dark:text-text-4-dark">{s.author}</div>
                     </div>
-                    <BookOpen size={14} className="text-ink-4 shrink-0 mt-0.5" />
+                    <BookOpen size={14} className="text-text-4 dark:text-text-4-dark shrink-0 mt-0.5" />
                   </div>
-                  <div className="text-xs text-ink-4 dark:text-white/30">{s.wordCount.toLocaleString()} words</div>
+                  <div className="text-xs text-text-4 dark:text-text-4-dark">{s.wordCount.toLocaleString()} words</div>
                   {alreadyAdded ? (
                     <MacButton size="sm" variant="ghost" disabled>Added</MacButton>
                   ) : (
@@ -134,18 +131,18 @@ export default function LibraryView() {
       </div>
 
       {/* User library */}
-      {allItems.length > 0 && (
+      {library.length > 0 && (
         <div>
-          <p className="text-xs text-ink-4 dark:text-white/30 mb-2 font-medium uppercase tracking-widest">Your Library</p>
+          <p className="label-mono text-text-4 dark:text-text-4-dark mb-2">Your Library</p>
           <div className="flex flex-col gap-1">
-            {allItems.map((item) => (
+            {library.map((item) => (
               <div
                 key={item.id}
                 className={clsx(
-                  "flex items-center justify-between px-3 py-2.5 rounded-[8px] border transition-all cursor-pointer",
+                  "flex items-center justify-between px-3 py-2.5 rounded-[var(--radius-md)] border transition-all cursor-pointer",
                   selectedTextId === item.id
-                    ? "bg-accent border-accent text-white"
-                    : "bg-page dark:bg-white/[0.04] border-ink/[0.06] dark:border-white/[0.06] text-ink-2 dark:text-white/60 hover:bg-parchment-2 dark:hover:bg-white/[0.06]"
+                    ? "bg-accent dark:bg-accent-dark border-accent dark:border-accent-dark text-white dark:text-[#111]"
+                    : "bg-surface dark:bg-surface-dark border-border dark:border-border-dark text-text-2 dark:text-text-2-dark hover:bg-surface-hover dark:hover:bg-surface-hover-dark"
                 )}
                 onClick={() => loadText(item.id, item.content)}
               >
@@ -157,10 +154,7 @@ export default function LibraryView() {
                   <span className="text-xs opacity-60">{item.wordCount.toLocaleString()}w</span>
                   <button
                     onClick={(e) => { e.stopPropagation(); removeLibraryText(item.id); }}
-                    className={clsx(
-                      "opacity-0 group-hover:opacity-100 hover:opacity-100 transition-opacity p-1 rounded",
-                      selectedTextId === item.id ? "hover:bg-white/20" : "hover:bg-black/[0.06]"
-                    )}
+                    className="opacity-0 hover:opacity-100 transition-opacity p-1 rounded hover:bg-black/10 dark:hover:bg-white/10"
                   >
                     <Trash2 size={12} />
                   </button>

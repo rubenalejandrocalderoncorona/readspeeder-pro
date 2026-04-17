@@ -84,7 +84,7 @@ const defaultLessonProgress = (): LessonProgress[] =>
   Array.from({ length: 12 }, (_, i) => ({
     lessonId: (i + 1) as LessonId,
     completedExercises: 0,
-    unlocked: i === 0, // only lesson 1 starts unlocked
+    unlocked: true,
     bestWpm: 0,
     bestConcentration: 0,
   }));
@@ -180,7 +180,7 @@ export const useAppStore = create<AppState>()(
         return get().lessonProgress.find((lp) => lp.lessonId === id) ?? {
           lessonId: id,
           completedExercises: 0,
-          unlocked: id === 1,
+          unlocked: true,
           bestWpm: 0,
           bestConcentration: 0,
         };
@@ -188,6 +188,14 @@ export const useAppStore = create<AppState>()(
     }),
     {
       name: "readspeeder-pro",
+      version: 2,
+      migrate: (persistedState: unknown, version: number) => {
+        const state = persistedState as Partial<AppState>;
+        if (version < 2 && state.lessonProgress) {
+          state.lessonProgress = state.lessonProgress.map((lp) => ({ ...lp, unlocked: true }));
+        }
+        return state as AppState;
+      },
       partialize: (state) => ({
         lessonProgress: state.lessonProgress,
         exerciseHistory: state.exerciseHistory,

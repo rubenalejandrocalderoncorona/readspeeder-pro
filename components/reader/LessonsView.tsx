@@ -1,7 +1,7 @@
 "use client";
 
-import React, { useMemo, useCallback } from "react";
-import { Lock, CheckCircle2, Circle } from "lucide-react";
+import React, { useMemo, useCallback, useState, useEffect } from "react";
+import { Lock, CheckCircle2, Circle, ChevronLeft } from "lucide-react";
 import { clsx } from "clsx";
 import { MacButton, MacBadge } from "@/components/macos/MacUI";
 import { PhraseDisplay } from "@/components/reader/PhraseDisplay";
@@ -26,6 +26,27 @@ export default function LessonsView() {
   const library           = useAppStore((s) => s.library);
   const selectedTextId    = useAppStore((s) => s.selectedTextId);
   const setSelectedTextId = useAppStore((s) => s.setSelectedTextId);
+
+  const [isFullscreen, setIsFullscreen] = useState(false);
+
+  useEffect(() => {
+    const handler = () => setIsFullscreen(!!document.fullscreenElement);
+    document.addEventListener("fullscreenchange", handler);
+    return () => document.removeEventListener("fullscreenchange", handler);
+  }, []);
+
+  const toggleFullscreen = useCallback(() => {
+    if (!document.fullscreenElement) {
+      document.documentElement.requestFullscreen().catch(() => {});
+    } else {
+      document.exitFullscreen().catch(() => {});
+    }
+  }, []);
+
+  const quitReading = useCallback(() => {
+    setPhrases([]);
+    setSelectedTextId(null);
+  }, [setPhrases, setSelectedTextId]);
 
   const lessonConfig = LESSONS.find((l) => l.id === activeLessonId)!;
   const progress     = lessonProgress.find((lp) => lp.lessonId === activeLessonId);
@@ -57,11 +78,11 @@ export default function LessonsView() {
   return (
     <div className="flex h-full">
       {/* ── Lesson list ─────────────────────────────────────────────── */}
-      <div className="w-52 shrink-0 border-r border-ink/[0.07] dark:border-white/[0.05] overflow-y-auto bg-parchment-2/60 dark:bg-surface-dark/60">
+      <div className="w-52 shrink-0 border-r border-border dark:border-border-dark overflow-y-auto bg-bg-elevated dark:bg-bg-elevated-dark">
         <div className="py-3 px-2">
           {LESSON_GROUPS.map((group) => (
             <div key={group.name} className="mb-4">
-          <p className="px-2 mb-1 text-[9px] font-bold uppercase tracking-[0.12em] text-ink-5 dark:text-white/20">
+              <p className="px-2 mb-1 label-mono text-text-5 dark:text-text-5-dark">
                 {group.name}
               </p>
               {group.ids.map((id) => {
@@ -75,20 +96,21 @@ export default function LessonsView() {
                     key={id}
                     onClick={() => !isLocked && setActiveLesson(id as any)}
                     className={clsx(
-                      "flex items-center gap-2 w-full px-2.5 py-[7px] rounded-[7px] text-[13px] text-left transition-all duration-100",
-                      isActive  && "bg-accent text-white font-medium",
-                      !isActive && !isLocked && "text-ink-2 dark:text-white/60 hover:bg-ink/[0.05] dark:hover:bg-white/[0.05]",
-                      isLocked  && "text-ink-5 dark:text-white/20 cursor-not-allowed"
+                      "flex items-center gap-2 w-full px-2.5 py-[7px] text-[13px] text-left transition-all duration-100",
+                      "rounded-[var(--radius-sm)] border-l-2",
+                      isActive  && "text-accent dark:text-accent-dark border-accent dark:border-accent-dark bg-accent-subtle dark:bg-accent-dim font-medium pl-[8px]",
+                      !isActive && !isLocked && "text-text-2 dark:text-text-2-dark border-transparent pl-[8px] hover:bg-surface dark:hover:bg-surface-dark",
+                      isLocked  && "text-text-5 dark:text-text-5-dark border-transparent pl-[8px] cursor-not-allowed"
                     )}
                   >
                     <span className="shrink-0">
-                      {isLocked  ? <Lock size={11} className="text-ink-5 dark:text-white/20" /> :
-                       done      ? <CheckCircle2 size={11} className={isActive ? "text-white/80" : "text-ok"} /> :
-                                   <Circle size={11} className={isActive ? "text-white/70" : "text-ink-5 dark:text-white/20"} />}
+                      {isLocked  ? <Lock size={11} className="text-text-5 dark:text-text-5-dark" /> :
+                       done      ? <CheckCircle2 size={11} className={isActive ? "text-accent dark:text-accent-dark" : "text-ok dark:text-ok-dark"} /> :
+                                   <Circle size={11} className={isActive ? "text-accent dark:text-accent-dark" : "text-text-5 dark:text-text-5-dark"} />}
                     </span>
                     <span className="flex-1">{lesson.name}</span>
                     {lp && lp.completedExercises > 0 && !isLocked && (
-                      <span className={clsx("text-[10px]", isActive ? "text-white/60" : "text-ink-4 dark:text-white/25")}>
+                      <span className={clsx("text-[10px]", isActive ? "text-accent dark:text-accent-dark" : "text-text-4 dark:text-text-4-dark")}>
                         {lp.completedExercises}/15
                       </span>
                     )}
@@ -101,19 +123,34 @@ export default function LessonsView() {
       </div>
 
       {/* ── Main area ───────────────────────────────────────────────── */}
-      <div className="flex-1 flex flex-col min-w-0">
+      <div className={clsx(
+        "flex-1 flex flex-col min-w-0",
+        isFullscreen && "fixed inset-0 z-50 bg-bg dark:bg-bg-dark"
+      )}>
         {/* Header */}
-        <div className="px-6 py-3 bg-page/60 dark:bg-white/[0.02] border-b border-ink/[0.06] dark:border-white/[0.06] flex items-center justify-between shrink-0 backdrop-blur-sm">
-          <div>
-            <div className="flex items-center gap-2 flex-wrap">
-              <h2 className="text-[15px] font-semibold text-ink dark:text-white/90">{lessonConfig.name}</h2>
-              <MacBadge color="blue">{lessonConfig.group}</MacBadge>
-              {lessonConfig.doublePass && <MacBadge color="yellow">Double Pass</MacBadge>}
-              {lessonConfig.measureConcentration && <MacBadge color="green">Concentration</MacBadge>}
+        <div className="px-6 py-3 bg-bg dark:bg-bg-dark border-b border-border dark:border-border-dark flex items-center justify-between shrink-0">
+          <div className="flex items-center gap-3 min-w-0">
+            {phrases.length > 0 && (
+              <button
+                onClick={quitReading}
+                className="flex items-center gap-1 text-[12px] text-text-3 dark:text-text-3-dark hover:text-text-2 dark:hover:text-text-2-dark transition-colors shrink-0"
+                title="Back to book selection"
+              >
+                <ChevronLeft size={14} />
+                Back
+              </button>
+            )}
+            <div className="min-w-0">
+              <div className="flex items-center gap-2 flex-wrap">
+                <h2 className="text-[15px] font-semibold text-text dark:text-text-dark">{lessonConfig.name}</h2>
+                <MacBadge color="blue">{lessonConfig.group}</MacBadge>
+                {lessonConfig.doublePass && <MacBadge color="yellow">Double Pass</MacBadge>}
+                {lessonConfig.measureConcentration && <MacBadge color="green">Concentration</MacBadge>}
+              </div>
+              <p className="text-[12px] text-text-4 dark:text-text-4-dark mt-0.5">{lessonConfig.description}</p>
             </div>
-            <p className="text-[12px] text-ink-4 dark:text-white/30 mt-0.5">{lessonConfig.description}</p>
           </div>
-          <p className="text-[12px] text-ink-4 dark:text-white/30 shrink-0 ml-4">
+          <p className="text-[12px] text-text-4 dark:text-text-4-dark shrink-0 ml-4">
             {progress?.completedExercises ?? 0}/15
           </p>
         </div>
@@ -122,29 +159,29 @@ export default function LessonsView() {
         {phrases.length === 0 ? (
           <div className="flex-1 flex flex-col items-center justify-center px-8 gap-6">
             <div className="text-center">
-              <p className="text-[15px] font-semibold text-ink-2 dark:text-white/60 mb-1">No text loaded</p>
-              <p className="text-[13px] text-ink-4 dark:text-white/30">Upload a file or pick one from your library.</p>
+              <p className="text-[15px] font-semibold text-text-2 dark:text-text-2-dark mb-1">No text loaded</p>
+              <p className="text-[13px] text-text-4 dark:text-text-4-dark">Upload a file or pick one from your library.</p>
             </div>
             <div className="w-full max-w-md">
               <FileUploader onLoaded={() => {}} />
             </div>
             {library.length > 0 && (
               <div className="w-full max-w-md">
-                <p className="text-[11px] font-bold uppercase tracking-[0.12em] text-ink-5 dark:text-white/20 mb-2">Library</p>
+                <p className="label-mono text-text-5 dark:text-text-5-dark mb-2">Library</p>
                 <div className="flex flex-col gap-1">
                   {library.map((item) => (
                     <button
                       key={item.id}
                       onClick={() => loadText(item.id)}
                       className={clsx(
-                        "flex items-center justify-between px-3 py-2.5 rounded-[8px] text-[13px] transition-all",
+                        "flex items-center justify-between px-3 py-2.5 rounded-[var(--radius-md)] text-[13px] transition-all",
                         selectedTextId === item.id
-                          ? "bg-accent text-white"
-                          : "bg-page dark:bg-white/[0.04] border border-ink/[0.07] dark:border-white/[0.07] text-ink-2 dark:text-white/60 hover:bg-parchment-2 dark:hover:bg-white/[0.06]"
+                          ? "bg-accent dark:bg-accent-dark text-white dark:text-[#111]"
+                          : "bg-surface dark:bg-surface-dark border border-border dark:border-border-dark text-text-2 dark:text-text-2-dark hover:bg-surface-hover dark:hover:bg-surface-hover-dark"
                       )}
                     >
                       <span className="truncate font-medium">{item.title}</span>
-                      <span className={clsx("text-[11px] ml-2 shrink-0", selectedTextId === item.id ? "text-white/60" : "text-ink-4 dark:text-white/25")}>
+                      <span className={clsx("text-[11px] ml-2 shrink-0", selectedTextId === item.id ? "opacity-70" : "text-text-4 dark:text-text-4-dark")}>
                         {item.wordCount.toLocaleString()} w
                       </span>
                     </button>
@@ -166,10 +203,10 @@ export default function LessonsView() {
                 />
               ) : (
                 <div className="flex flex-col items-center justify-center h-full gap-2">
-                  <p className="text-[15px] font-medium text-ink-4 dark:text-white/30">Ready</p>
-                  <p className="text-[12px] text-ink-5 dark:text-white/20">{phrases.length} phrases loaded</p>
+                  <p className="text-[15px] font-medium text-text-4 dark:text-text-4-dark">Ready</p>
+                  <p className="text-[12px] text-text-5 dark:text-text-5-dark">{phrases.length} phrases loaded</p>
                   {autoSpeedWpm && lessonConfig.doublePass && (
-                    <p className="text-[12px] text-accent mt-1">Auto speed: {autoSpeedWpm} WPM</p>
+                    <p className="text-[12px] text-accent dark:text-accent-dark mt-1">Auto speed: {autoSpeedWpm} WPM</p>
                   )}
                 </div>
               )}
@@ -186,7 +223,10 @@ export default function LessonsView() {
               onStop={reader.stop}
               onAdvance={reader.advance}
               onRetreat={reader.retreat}
+              onQuit={quitReading}
               showConcentration={lessonConfig.measureConcentration}
+              isFullscreen={isFullscreen}
+              onToggleFullscreen={toggleFullscreen}
             />
           </>
         )}

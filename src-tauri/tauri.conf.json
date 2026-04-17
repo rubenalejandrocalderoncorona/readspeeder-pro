@@ -1,13 +1,13 @@
 {
   "$schema": "https://schema.tauri.app/config/2",
   "productName": "ReadSpeeder Pro",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "identifier": "com.readspeeder.pro",
   "build": {
     "frontendDist": "../out",
-    "devUrl": "http://localhost:3000",
+    "devUrl": "http://localhost:3002",
     "beforeDevCommand": "npm run dev",
-    "beforeBuildCommand": "npm run build"
+    "beforeBuildCommand": "npm run build:tauri"
   },
   "app": {
     "windows": [
@@ -30,6 +30,9 @@
       "csp": null
     }
   },
+  "plugins": {
+    "dialog": {}
+  },
   "bundle": {
     "active": true,
     "targets": "all",
@@ -50,3 +53,4 @@
     }
   }
 }
+

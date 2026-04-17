@@ -11,10 +11,10 @@ export async function POST(req: NextRequest) {
     const buffer = Buffer.from(await file.arrayBuffer());
 
     if (ext === "pdf") {
-      // eslint-disable-next-line @typescript-eslint/no-require-imports
-      const pdfParse = require("pdf-parse/lib/pdf-parse.js") as (b: Buffer, opts?: Record<string,unknown>) => Promise<{ text: string }>;
-      const data = await pdfParse(buffer, { max: 0 });
-      const cleaned = cleanText(data.text);
+      const { PDFParse } = await import("pdf-parse");
+      const parser = new PDFParse({ data: buffer });
+      const result = await parser.getText();
+      const cleaned = cleanText(result.text);
       const title = cleaned.split("\n")[0].trim().slice(0, 80) || "Untitled PDF";
       return NextResponse.json({ title, content: cleaned, wordCount: countWords(cleaned) });
     }

@@ -13,20 +13,29 @@ export function MacButton({ variant = "secondary", size = "md", className, child
   return (
     <button
       className={clsx(
-        "inline-flex items-center justify-center font-medium transition-all duration-150",
-        "select-none cursor-default rounded-[7px] whitespace-nowrap",
+        "inline-flex items-center justify-center transition-all duration-[140ms]",
+        "select-none cursor-default whitespace-nowrap font-[family-name:var(--font-mono)]",
         "active:scale-[0.97] disabled:opacity-35 disabled:pointer-events-none",
-        size === "sm" && "px-3 py-[5px] text-[12px] gap-1",
-        size === "md" && "px-4 py-[7px] text-[13px] gap-1.5",
-        size === "lg" && "px-5 py-2.5 text-[14px] gap-2",
-        variant === "primary" && "bg-accent text-white shadow-sm hover:brightness-110",
-        variant === "secondary" && [
-          "bg-page dark:bg-white/[0.06] text-ink dark:text-white/70",
-          "border border-ink/[0.10] dark:border-white/[0.10]",
-          "shadow-sm hover:bg-parchment-2 dark:hover:bg-white/[0.10]",
+        "rounded-[var(--radius-sm)]",
+        size === "sm" && "px-3 py-1 text-[10px] gap-1 tracking-[0.06em] uppercase",
+        size === "md" && "px-4 py-[7px] text-[11px] gap-1.5 tracking-[0.06em] uppercase",
+        size === "lg" && "px-5 py-2 text-[12px] gap-2 tracking-[0.06em] uppercase",
+        variant === "primary" && [
+          "bg-accent text-white dark:bg-accent-dark dark:text-[#111]",
+          "border border-accent dark:border-accent-dark hover:brightness-110",
         ],
-        variant === "destructive" && "bg-danger text-white shadow-sm hover:brightness-110",
-        variant === "ghost" && "text-ink-3 dark:text-white/40 hover:bg-ink/[0.05] dark:hover:bg-white/[0.06]",
+        variant === "secondary" && [
+          "bg-transparent text-text-2 dark:text-text-2-dark",
+          "border border-border dark:border-border-dark",
+          "hover:border-border-strong dark:hover:border-border-strong-dark hover:text-text dark:hover:text-text-dark",
+        ],
+        variant === "destructive" && [
+          "bg-danger text-white border border-danger hover:brightness-110",
+        ],
+        variant === "ghost" && [
+          "text-text-3 dark:text-text-3-dark border border-transparent",
+          "hover:bg-accent-subtle dark:hover:bg-white/[0.05] hover:text-text dark:hover:text-text-dark",
+        ],
         className
       )}
       {...props}
@@ -44,11 +53,10 @@ export function MacCard({ children, className, glass }: {
 }) {
   return (
     <div className={clsx(
-      "rounded-[10px] border",
+      "rounded-[var(--radius-md)] border",
       glass
-        ? "glass border-white/30 dark:border-white/[0.06]"
-        : "bg-page dark:bg-white/[0.04] border-ink/[0.07] dark:border-white/[0.07]",
-      "shadow-sm",
+        ? "glass border-white/20 dark:border-white/[0.05]"
+        : "bg-surface dark:bg-surface-dark border-border dark:border-border-dark",
       className
     )}>
       {children}
@@ -63,12 +71,13 @@ export function MacBadge({ children, color = "gray" }: {
 }) {
   return (
     <span className={clsx(
-      "inline-flex items-center px-2 py-[3px] rounded-full text-[10px] font-semibold tracking-wide uppercase",
-      color === "blue"   && "bg-blue-50   text-blue-700   dark:bg-blue-900/25  dark:text-blue-300",
-      color === "green"  && "bg-green-50  text-green-700  dark:bg-green-900/25 dark:text-green-300",
-      color === "yellow" && "bg-amber-50  text-amber-700  dark:bg-amber-900/25 dark:text-amber-300",
-      color === "red"    && "bg-red-50    text-red-700    dark:bg-red-900/25   dark:text-red-300",
-      color === "gray"   && "bg-parchment-3 text-ink-3 dark:bg-white/[0.08] dark:text-white/40",
+      "inline-flex items-center px-[6px] py-[2px] text-[9px] font-[family-name:var(--font-mono)]",
+      "font-medium tracking-[0.10em] uppercase border rounded-[var(--radius-xs)]",
+      color === "blue"   && "bg-blue-50   text-blue-700   border-blue-200   dark:bg-blue-900/20   dark:text-blue-300   dark:border-blue-800/40",
+      color === "green"  && "bg-green-50  text-green-700  border-green-200  dark:bg-green-900/20  dark:text-green-300  dark:border-green-800/40",
+      color === "yellow" && "bg-amber-50  text-amber-700  border-amber-200  dark:bg-amber-900/20  dark:text-amber-300  dark:border-amber-800/40",
+      color === "red"    && "bg-red-50    text-red-700    border-red-200    dark:bg-red-900/20    dark:text-red-300    dark:border-red-800/40",
+      color === "gray"   && "bg-bg-elevated text-text-3 border-border dark:bg-bg-elevated-dark dark:text-text-3-dark dark:border-border-dark",
     )}>
       {children}
     </span>
@@ -82,11 +91,14 @@ export function MacProgressBar({ value, color = "bg-accent", className }: {
   className?: string;
 }) {
   return (
-    <div className={clsx("h-[3px] rounded-full bg-ink/[0.08] dark:bg-white/[0.08] overflow-hidden", className)}>
+    <div className={clsx("h-[3px] bg-border dark:bg-border-dark overflow-hidden relative", className)}>
       <div
-        className={clsx("h-full rounded-full transition-all duration-300 ease-out", color)}
+        className={clsx("h-full transition-all duration-300 ease-out", color)}
         style={{ width: `${Math.max(0, Math.min(100, value))}%` }}
       />
+      {/* studytrack tick marks */}
+      <div className="absolute inset-0 pointer-events-none"
+        style={{ backgroundImage: "repeating-linear-gradient(90deg, transparent, transparent calc(10% - 1px), rgba(0,0,0,0.06) calc(10% - 1px), rgba(0,0,0,0.06) 10%)" }} />
     </div>
   );
 }

@@ -14,7 +14,7 @@ export function TitleBar({ title = "ReadSpeeder Pro" }: { title?: string }) {
         <div className="w-3 h-3 rounded-full bg-[#FEBC2E]" />
         <div className="w-3 h-3 rounded-full bg-[#28C840]" />
       </div>
-      <span className="text-[12px] font-medium text-ink-3 dark:text-white/40 tracking-wide">{title}</span>
+      <span className="text-[12px] font-medium text-text-3 dark:text-text-3-dark tracking-wide">{title}</span>
     </div>
   );
 }
