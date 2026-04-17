@@ -29,19 +29,30 @@ export default function LessonsView() {
 
   const [isFullscreen, setIsFullscreen] = useState(false);
 
+  const isTauri = typeof window !== "undefined" && "__TAURI__" in window;
+
   useEffect(() => {
+    if (isTauri) return; // Tauri tracks its own state via toggleFullscreen
     const handler = () => setIsFullscreen(!!document.fullscreenElement);
     document.addEventListener("fullscreenchange", handler);
     return () => document.removeEventListener("fullscreenchange", handler);
-  }, []);
+  }, [isTauri]);
 
-  const toggleFullscreen = useCallback(() => {
-    if (!document.fullscreenElement) {
-      document.documentElement.requestFullscreen().catch(() => {});
+  const toggleFullscreen = useCallback(async () => {
+    if (isTauri) {
+      const { getCurrentWindow } = await import("@tauri-apps/api/window");
+      const win = getCurrentWindow();
+      const current = await win.isFullscreen();
+      await win.setFullscreen(!current);
+      setIsFullscreen(!current);
     } else {
-      document.exitFullscreen().catch(() => {});
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen().catch(() => {});
+      } else {
+        document.exitFullscreen().catch(() => {});
+      }
     }
-  }, []);
+  }, [isTauri]);
 
   const quitReading = useCallback(() => {
     setPhrases([]);
