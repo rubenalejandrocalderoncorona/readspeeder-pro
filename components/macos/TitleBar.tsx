@@ -6,7 +6,7 @@ export function TitleBar() {
   const [isTauri, setIsTauri] = useState(false);
 
   useEffect(() => {
-    setIsTauri("__TAURI__" in window);
+    setIsTauri("isTauri" in window);
   }, []);
 
   if (!isTauri) return null;

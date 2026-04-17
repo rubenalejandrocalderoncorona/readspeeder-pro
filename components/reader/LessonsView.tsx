@@ -29,7 +29,7 @@ export default function LessonsView() {
 
   const [isFullscreen, setIsFullscreen] = useState(false);
 
-  const isTauri = typeof window !== "undefined" && "__TAURI__" in window;
+  const isTauri = typeof window !== "undefined" && "isTauri" in window;
 
   useEffect(() => {
     if (isTauri) return; // Tauri tracks its own state via toggleFullscreen

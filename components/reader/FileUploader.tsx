@@ -27,7 +27,7 @@ async function openNativeFilePicker(): Promise<string | null> {
 }
 
 function isTauri() {
-  return typeof window !== "undefined" && "__TAURI__" in window;
+  return typeof window !== "undefined" && "isTauri" in window;
 }
 
 export function FileUploader({ onLoaded }: { onLoaded?: (n: number) => void }) {
