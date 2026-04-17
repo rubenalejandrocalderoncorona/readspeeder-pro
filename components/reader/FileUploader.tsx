@@ -15,6 +15,17 @@ async function invokeParseNative(filePath: string, maxWords: number) {
   );
 }
 
+async function openNativeFilePicker(): Promise<string | null> {
+  const { open } = await import("@tauri-apps/plugin-dialog");
+  const selected = await open({
+    multiple: false,
+    filters: [{ name: "Book", extensions: ["txt", "pdf", "epub"] }],
+  });
+  if (!selected) return null;
+  // selected is a string (file path) in Tauri v2
+  return typeof selected === "string" ? selected : null;
+}
+
 function isTauri() {
   return typeof window !== "undefined" && "__TAURI__" in window;
 }
@@ -30,46 +41,48 @@ export function FileUploader({ onLoaded }: { onLoaded?: (n: number) => void }) {
   const setPhrases        = useAppStore((s) => s.setPhrases);
   const maxPhrase         = useAppStore((s) => s.settings.maxPhrase);
 
-  const process = useCallback(async (file: File) => {
+  const processTauriPath = useCallback(async (filePath: string) => {
+    setIsProcessing(true);
+    setError(null);
+    setFileName(filePath.split(/[\\/]/).pop() ?? filePath);
+    try {
+      const result = await invokeParseNative(filePath, maxPhrase);
+      const firstExercise = result.exercises[0] ?? result.phrases;
+      const title = (filePath.split(/[\\/]/).pop() ?? filePath).replace(/\.[^.]+$/, "");
+      addLibraryText({
+        title,
+        content: firstExercise.join(" "),
+        wordCount: result.wordCount,
+        source: "user",
+      });
+      setPhrases(firstExercise);
+      onLoaded?.(result.exercises.length);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : String(e));
+    } finally {
+      setIsProcessing(false);
+    }
+  }, [addLibraryText, setPhrases, maxPhrase, onLoaded]);
+
+  const processWebFile = useCallback(async (file: File) => {
     setIsProcessing(true);
     setError(null);
     setFileName(file.name);
     try {
       const ext = file.name.split(".").pop()?.toLowerCase();
-
-      if (isTauri() && (ext === "pdf" || ext === "epub")) {
-        // ── Tauri path: native Rust parser ───────────────────────────────
-        // Tauri gives us the real file path via the file object's path property.
-        const nativePath = (file as File & { path?: string }).path;
-        if (!nativePath) throw new Error("Cannot read file path — please re-open from disk.");
-
-        const result = await invokeParseNative(nativePath, maxPhrase);
-        const firstExercise = result.exercises[0] ?? result.phrases;
-        // Store content stub for library (full content not returned; store title only)
-        addLibraryText({
-          title: file.name.replace(/\.[^.]+$/, ""),
-          content: firstExercise.join(" "),
-          wordCount: result.wordCount,
-          source: "user",
-        });
-        setPhrases(firstExercise);
-        onLoaded?.(result.exercises.length);
+      let parsed: { title: string; content: string; wordCount: number };
+      if (ext === "txt") {
+        parsed = parseTxt(await file.text());
+      } else if (ext === "pdf" || ext === "epub") {
+        parsed = await parseFileViaApi(file);
       } else {
-        // ── Web / TXT path ───────────────────────────────────────────────
-        let parsed: { title: string; content: string; wordCount: number };
-        if (ext === "txt") {
-          parsed = parseTxt(await file.text());
-        } else if (ext === "pdf" || ext === "epub") {
-          parsed = await parseFileViaApi(file);
-        } else {
-          throw new Error("Unsupported format — use .txt, .pdf, or .epub");
-        }
-        const phrases   = segmentIntoPhrases(parsed.content, { maxWords: maxPhrase });
-        const exercises = divideIntoExercises(phrases);
-        addLibraryText({ title: parsed.title, content: parsed.content, wordCount: parsed.wordCount, source: "user" });
-        setPhrases(exercises[0] ?? phrases);
-        onLoaded?.(exercises.length);
+        throw new Error("Unsupported format — use .txt, .pdf, or .epub");
       }
+      const phrases   = segmentIntoPhrases(parsed.content, { maxWords: maxPhrase });
+      const exercises = divideIntoExercises(phrases);
+      addLibraryText({ title: parsed.title, content: parsed.content, wordCount: parsed.wordCount, source: "user" });
+      setPhrases(exercises[0] ?? phrases);
+      onLoaded?.(exercises.length);
     } catch (e) {
       setError(e instanceof Error ? e.message : "Failed to process file");
     } finally {
@@ -77,13 +90,45 @@ export function FileUploader({ onLoaded }: { onLoaded?: (n: number) => void }) {
     }
   }, [addLibraryText, setPhrases, maxPhrase, onLoaded]);
 
+  const handleClick = useCallback(async () => {
+    if (isTauri()) {
+      // Use native dialog to get a real file path
+      try {
+        const filePath = await openNativeFilePicker();
+        if (filePath) await processTauriPath(filePath);
+      } catch (e) {
+        setError(e instanceof Error ? e.message : "Failed to open file dialog");
+      }
+    } else {
+      inputRef.current?.click();
+    }
+  }, [processTauriPath]);
+
+  const handleDrop = useCallback(async (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging(false);
+    const f = e.dataTransfer.files[0];
+    if (!f) return;
+    if (isTauri()) {
+      // Drag-drop in Tauri: file.path may or may not be set
+      const nativePath = (f as File & { path?: string }).path;
+      if (nativePath) {
+        await processTauriPath(nativePath);
+      } else {
+        setError("Drag-and-drop is not supported in the app — use the Open button instead.");
+      }
+    } else {
+      await processWebFile(f);
+    }
+  }, [processTauriPath, processWebFile]);
+
   return (
     <div className="flex flex-col gap-2">
       <div
-        onClick={() => inputRef.current?.click()}
+        onClick={handleClick}
         onDragOver={(e) => { e.preventDefault(); setIsDragging(true); }}
         onDragLeave={() => setIsDragging(false)}
-        onDrop={(e) => { e.preventDefault(); setIsDragging(false); const f = e.dataTransfer.files[0]; if (f) process(f); }}
+        onDrop={handleDrop}
         className={clsx(
           "border-2 border-dashed rounded-[12px] p-7 flex flex-col items-center gap-2.5 cursor-pointer transition-all duration-150",
           isDragging
@@ -91,8 +136,9 @@ export function FileUploader({ onLoaded }: { onLoaded?: (n: number) => void }) {
             : "border-border dark:border-border-dark hover:border-accent/50 dark:hover:border-accent-dark/50 hover:bg-bg-elevated dark:hover:bg-bg-elevated-dark"
         )}
       >
+        {/* Hidden input only used in browser mode */}
         <input ref={inputRef} type="file" accept=".txt,.pdf,.epub" className="hidden"
-          onChange={(e) => { const f = e.target.files?.[0]; if (f) process(f); }} />
+          onChange={(e) => { const f = e.target.files?.[0]; if (f) processWebFile(f); }} />
         {isProcessing
           ? <div className="w-5 h-5 border-2 border-accent border-t-transparent rounded-full animate-spin" />
           : <Upload size={20} className="text-text-5 dark:text-text-5-dark" strokeWidth={1.5} />
